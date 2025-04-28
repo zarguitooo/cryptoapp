@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import companyBackgrounds from './company-backgrounds.json';
 
 // API call functions
 async function apiLogin(name) {
@@ -253,6 +254,7 @@ function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
   const [name, setName] = useState('');
   const [corp, setCorp] = useState('');
   const [history, setHistory] = useState([]);
+  const [showBackground, setShowBackground] = useState(false);
 
   useEffect(() => {
     let interval;
@@ -292,60 +294,87 @@ function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
   };
 
   return (
-    <div style={{ background: '#222', color: '#fff', width: 250, padding: 10, borderRadius: 8, fontFamily: 'sans-serif', border: '4px solid #aaa' }}>
-      <button onClick={onBack} style={{ marginBottom: 8, background: '#444', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 8px', cursor: 'pointer' }}>← Back</button>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-        <span>TIME</span>
-        <span>MONEY: <span style={{ background: '#ff9800', color: '#fff', padding: '2px 8px', borderRadius: 4 }}>{formatNum(portfolio.money)}</span></span>
-        <span>{portfolio.name}</span>
-      </div>
-      <div style={{ fontWeight: 'bold', fontSize: 24, marginTop: 8 }}>{name}</div>
-      <div style={{ fontSize: 12, color: '#ccc', marginBottom: 8 }}>{corp}</div>
-      {/* Graph */}
-      <div style={{ height: 60, background: '#111', margin: '8px 0', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <MiniGraph history={history} color={growth < 0 ? 'red' : 'lime'} showAxis={true} width={120} height={50} />
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', color: growth < 0 ? 'red' : 'lime', fontSize: 16 }}>
-        <span>{growth > 0 ? '+' : ''}{formatNum(growth)}%<br /><span style={{ color: '#fff', fontWeight: 'normal', fontSize: 10 }}>GROWTH</span></span>
-        <span>{demand > 0 ? '+' : ''}{formatNum(demand)}%<br /><span style={{ color: '#fff', fontWeight: 'normal', fontSize: 10 }}>DEMAND</span></span>
-        <span>{formatNum(value)}$<br /><span style={{ color: '#fff', fontWeight: 'normal', fontSize: 10 }}>VALUE</span></span>
-      </div>
-      <div style={{ color: growth < 0 ? 'red' : 'lime', fontSize: 12, margin: '4px 0 8px 0' }}>20% PROFIT</div>
-      <div style={{ background: '#111', borderRadius: 4, padding: 6, marginBottom: 8 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
-          <span>Your K:</span>
-          <span style={{ background: '#ff9800', color: '#fff', padding: '2px 8px', borderRadius: 4 }}>{formatNum(tokens)}</span>
-          <span style={{ color: growth < 0 ? 'red' : 'lime' }}>{formatNum(tokenValue)}$</span>
+    <div className="token-trade">
+      <div style={{ background: '#222', color: '#fff', width: 250, padding: 10, borderRadius: 8, fontFamily: 'sans-serif', border: '4px solid #aaa' }}>
+        <button onClick={onBack} style={{ marginBottom: 8, background: '#444', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 8px', cursor: 'pointer' }}>← Back</button>
+        <div style={{ position: 'relative' }}>
+          <h2 
+            style={{ margin: 0, cursor: 'help' }}
+            onMouseEnter={() => setShowBackground(true)}
+            onMouseLeave={() => setShowBackground(false)}
+          >
+            {name}
+            {showBackground && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                background: '#333',
+                color: '#fff',
+                padding: 10,
+                borderRadius: 4,
+                fontSize: '0.8em',
+                width: 300,
+                zIndex: 1000,
+                boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                border: '1px solid #555'
+              }}>
+                {companyBackgrounds.company_backgrounds[corp]}
+              </div>
+            )}
+          </h2>
+          <p style={{ margin: '5px 0', fontSize: '0.9em', color: '#aaa' }}>{corp}</p>
         </div>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+          <span>TIME</span>
+          <span>MONEY: <span style={{ background: '#ff9800', color: '#fff', padding: '2px 8px', borderRadius: 4 }}>{formatNum(portfolio.money)}</span></span>
+          <span>{portfolio.name}</span>
+        </div>
+        <div style={{ height: 60, background: '#111', margin: '8px 0', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <MiniGraph history={history} color={growth < 0 ? 'red' : 'lime'} showAxis={true} width={120} height={50} />
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', color: growth < 0 ? 'red' : 'lime', fontSize: 16 }}>
+          <span>{growth > 0 ? '+' : ''}{formatNum(growth)}%<br /><span style={{ color: '#fff', fontWeight: 'normal', fontSize: 10 }}>GROWTH</span></span>
+          <span>{demand > 0 ? '+' : ''}{formatNum(demand)}%<br /><span style={{ color: '#fff', fontWeight: 'normal', fontSize: 10 }}>DEMAND</span></span>
+          <span>{formatNum(value)}$<br /><span style={{ color: '#fff', fontWeight: 'normal', fontSize: 10 }}>VALUE</span></span>
+        </div>
+        <div style={{ color: growth < 0 ? 'red' : 'lime', fontSize: 12, margin: '4px 0 8px 0' }}>20% PROFIT</div>
+        <div style={{ background: '#111', borderRadius: 4, padding: 6, marginBottom: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
+            <span>Your K:</span>
+            <span style={{ background: '#ff9800', color: '#fff', padding: '2px 8px', borderRadius: 4 }}>{formatNum(tokens)}</span>
+            <span style={{ color: growth < 0 ? 'red' : 'lime' }}>{formatNum(tokenValue)}$</span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+          <button
+            style={{ background: mode === 'buy' ? '#ff9800' : '#444', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 10px', marginRight: 6, cursor: 'pointer' }}
+            onClick={() => setMode('buy')}
+            disabled={loading}
+          >BUY</button>
+          <button
+            style={{ background: mode === 'sell' ? '#ff9800' : '#444', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 10px', marginRight: 6, cursor: 'pointer' }}
+            onClick={() => setMode('sell')}
+            disabled={loading}
+          >SELL</button>
+          <input
+            type="number"
+            min={0}
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            style={{ width: 50, marginLeft: 6, borderRadius: 4, border: '1px solid #888', padding: '2px 4px' }}
+            disabled={loading}
+          />
+        </div>
         <button
-          style={{ background: mode === 'buy' ? '#ff9800' : '#444', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 10px', marginRight: 6, cursor: 'pointer' }}
-          onClick={() => setMode('buy')}
-          disabled={loading}
-        >BUY</button>
-        <button
-          style={{ background: mode === 'sell' ? '#ff9800' : '#444', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 10px', marginRight: 6, cursor: 'pointer' }}
-          onClick={() => setMode('sell')}
-          disabled={loading}
-        >SELL</button>
-        <input
-          type="number"
-          min={0}
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          style={{ width: 50, marginLeft: 6, borderRadius: 4, border: '1px solid #888', padding: '2px 4px' }}
-          disabled={loading}
-        />
+          onClick={handleTransaction}
+          style={{ width: '100%', background: '#ff9800', color: '#fff', border: 'none', borderRadius: 4, padding: '8px 0', fontWeight: 'bold', fontSize: 14, cursor: 'pointer' }}
+          disabled={loading || input <= 0}
+        >
+          {loading ? 'PROCESSING...' : 'COMPLETE TRANSACTION'}
+        </button>
+        {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
       </div>
-      <button
-        onClick={handleTransaction}
-        style={{ width: '100%', background: '#ff9800', color: '#fff', border: 'none', borderRadius: 4, padding: '8px 0', fontWeight: 'bold', fontSize: 14, cursor: 'pointer' }}
-        disabled={loading || input <= 0}
-      >
-        {loading ? 'PROCESSING...' : 'COMPLETE TRANSACTION'}
-      </button>
-      {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
     </div>
   );
 }
