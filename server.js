@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const readline = require('readline');
 const app = express();
 const PORT = 4000;
 
@@ -11,42 +12,172 @@ let players = new Map();
 // In-memory store for tokens
 let tokens = [
   {
-    id: 'papa',
-    name: 'PapaCoin',
-    corp: 'PapaCoin corp.',
+    id: 'rugpull',
+    name: 'RugPull Coin',
+    corp: 'Rug Pull & Run LLC',
+    value: 0.0001,
+    growth: -99,
+    demand: -100,
+    history: [{ value: 0.0001, time: 0 }],
+  },
+  {
+    id: 'ponzi',
+    name: 'Ponzi Token',
+    corp: 'Ponzi Scheme Palace',
+    value: 1000,
+    growth: 1000,
+    demand: 1000,
+    history: [{ value: 1000, time: 0 }],
+  },
+  {
+    id: 'bagholder',
+    name: 'BagHolder Coin',
+    corp: 'Bagholder\'s Graveyard',
+    value: 0.01,
+    growth: -50,
+    demand: -75,
+    history: [{ value: 0.01, time: 0 }],
+  },
+  {
+    id: 'margin',
+    name: 'Margin Call Token',
+    corp: 'Margin Call Crematorium',
+    value: 500,
+    growth: -25,
+    demand: -50,
+    history: [{ value: 500, time: 0 }],
+  },
+  {
+    id: 'paperhands',
+    name: 'PaperHands Coin',
+    corp: 'Paper Hands Suicide Hotline',
+    value: 0.5,
+    growth: -10,
+    demand: -20,
+    history: [{ value: 0.5, time: 0 }],
+  },
+  {
+    id: 'whalefood',
+    name: 'WhaleFood Token',
+    corp: 'Whale Food Processing Plant',
+    value: 0.001,
+    growth: -90,
+    demand: -95,
+    history: [{ value: 0.001, time: 0 }],
+  },
+  {
+    id: 'gasfee',
+    name: 'GasFee Coin',
+    corp: 'Gas Fee Extortion Inc',
+    value: 100,
+    growth: 200,
+    demand: 300,
+    history: [{ value: 100, time: 0 }],
+  },
+  {
+    id: 'moon',
+    name: 'MoonOrCoffin',
+    corp: 'Moon or Coffin Express',
     value: 10,
-    growth: 10,
-    demand: 20,
+    growth: 500,
+    demand: 1000,
     history: [{ value: 10, time: 0 }],
   },
   {
-    id: 'merca',
-    name: 'MercaCoin',
-    corp: 'MercaCoin corp.',
-    value: 15,
-    growth: 30,
-    demand: 30,
-    history: [{ value: 15, time: 0 }],
+    id: 'degen',
+    name: 'Degen Death Wish',
+    corp: 'Degen\'s Death Wish',
+    value: 0.1,
+    growth: 1000,
+    demand: 2000,
+    history: [{ value: 0.1, time: 0 }],
   },
   {
-    id: 'jose',
-    name: 'JoseCoin',
-    corp: 'JoseCoin corp.',
-    value: 5,
-    growth: -89,
-    demand: -40,
-    history: [{ value: 5, time: 0 }],
-  },
-  {
-    id: 'ginko',
-    name: 'GinkoCoin',
-    corp: 'GinkoCoin corp.',
-    value: 8,
-    growth: 20,
-    demand: 45,
-    history: [{ value: 8, time: 0 }],
+    id: 'hodl',
+    name: 'HODL Token',
+    corp: 'HODL or Hospice',
+    value: 1,
+    growth: 0,
+    demand: 0,
+    history: [{ value: 1, time: 0 }],
   }
 ];
+
+// Admin commands
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+function printHelp() {
+  console.log('\nAdmin Commands:');
+  console.log('  list - List all coins');
+  console.log('  add <id> <name> <corp> <value> <growth> <demand> - Add a new coin');
+  console.log('  delete <id> - Delete a coin');
+  console.log('  help - Show this help message');
+  console.log('  exit - Exit admin mode\n');
+}
+
+function handleAdminCommand(input) {
+  const [command, ...args] = input.trim().split(' ');
+  
+  switch (command) {
+    case 'list':
+      console.log('\nCurrent coins:');
+      tokens.forEach(token => {
+        console.log(`  ${token.id}: ${token.name} (${token.corp}) - Value: ${token.value}, Growth: ${token.growth}%, Demand: ${token.demand}%`);
+      });
+      break;
+
+    case 'add':
+      if (args.length < 6) {
+        console.log('Error: Missing arguments. Usage: add <id> <name> <corp> <value> <growth> <demand>');
+        return;
+      }
+      const [id, name, corp, value, growth, demand] = args;
+      if (tokens.some(t => t.id === id)) {
+        console.log(`Error: Coin with id '${id}' already exists`);
+        return;
+      }
+      tokens.push({
+        id,
+        name,
+        corp,
+        value: parseFloat(value),
+        growth: parseFloat(growth),
+        demand: parseFloat(demand),
+        history: [{ value: parseFloat(value), time: Math.round((Date.now() - serverStart) / 1000) }]
+      });
+      console.log(`Added new coin: ${name} (${corp})`);
+      break;
+
+    case 'delete':
+      if (args.length < 1) {
+        console.log('Error: Missing coin id. Usage: delete <id>');
+        return;
+      }
+      const coinId = args[0];
+      const index = tokens.findIndex(t => t.id === coinId);
+      if (index === -1) {
+        console.log(`Error: Coin with id '${coinId}' not found`);
+        return;
+      }
+      tokens.splice(index, 1);
+      console.log(`Deleted coin: ${coinId}`);
+      break;
+
+    case 'help':
+      printHelp();
+      break;
+
+    case 'exit':
+      rl.close();
+      break;
+
+    default:
+      console.log('Unknown command. Type "help" for available commands.');
+  }
+}
 
 // Initialize a new player
 function createPlayer(playerId, playerName) {
@@ -182,4 +313,9 @@ app.post('/api/token/:id/trade', authenticatePlayer, (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  console.log('\nAdmin mode activated. Type "help" for available commands.');
+  
+  rl.on('line', (input) => {
+    handleAdminCommand(input);
+  });
 }); 
