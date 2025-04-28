@@ -1,30 +1,57 @@
 {
   "company_backgrounds": {
-    "Rug Pull & Run LLC": "Founded by a team of ex-carnival workers who realized they could make more money scamming crypto investors than running rigged games. Their motto: 'Why work when you can rug?'",
+    "Rug Pull & Run LLC": {
+      "background": "Started as a legitimate crypto project, but the founders had a sudden change of heart and decided to test the 'pull' part of their company name. Now they're wanted in 7 countries, but their token still somehow trades on unregulated exchanges.",
+      "image": "/images/companies/rug-pull.png"
+    },
     
     "Exit Scam Speedway": "Started as a legitimate crypto project until the founders discovered they could make more money by disappearing. Now they offer 'disappearance as a service' to other crypto projects.",
     
-    "Ponzi Scheme Palace": "Originally a pyramid scheme selling essential oils, they pivoted to crypto when they realized blockchain made their operations more efficient. Their whitepaper is just a copy of Bernie Madoff's playbook with 'blockchain' added in random places.",
+    "Ponzi Scheme Palace": {
+      "background": "Their business model is so transparent that it's almost admirable. They promise 1000% returns in 24 hours, and somehow people still fall for it. Their headquarters is a cardboard box behind a Wendy's.",
+      "image": "/images/companies/ponzi.png"
+    },
     
     "Pump & Dump Morgue": "Founded by a group of failed day traders who found their true calling in manipulating crypto prices. Their office is decorated with tombstones of dead altcoins they've helped bury.",
     
-    "Bagholder's Graveyard": "A support group turned business venture. They charge grieving investors to bury their worthless tokens in a real cemetery. Each plot comes with a tombstone reading 'Here lies my life savings'.",
+    "Bagholder's Graveyard": {
+      "background": "A support group turned investment firm. They specialize in buying the absolute peak of every crypto trend. Their office is decorated with framed screenshots of all-time-high purchases.",
+      "image": "/images/companies/bagholder.png"
+    },
     
-    "Margin Call Crematorium": "Started by a former funeral director who noticed similarities between grieving families and crypto traders getting liquidated. Now offers both funeral services and margin call counseling.",
+    "Margin Call Crematorium": {
+      "background": "They started as a funeral home but pivoted to crypto when they realized both businesses deal with people who are financially dead. Their slogan: 'We'll liquidate your positions before we liquidate you.'",
+      "image": "/images/companies/margin-call.png"
+    },
     
     "Liquidation Liquor & Guns": "A one-stop shop for traders who've lost everything. They sell both the means to drown your sorrows and end them. Their best-selling product is the 'Margin Call Martini' - one shot and you're done.",
     
-    "Paper Hands Suicide Hotline": "Originally a legitimate mental health service, they pivoted when they realized 99% of their calls were from crypto traders who sold too early. Now they just play 'HODL' on repeat.",
+    "Paper Hands Suicide Hotline": {
+      "background": "A 24/7 support service for traders who sold too early. Their call center is staffed by former day traders who understand the pain of watching a coin moon right after selling.",
+      "image": "/images/companies/paper-hands.png"
+    },
     
-    "Whale Food Processing Plant": "A dark web operation that tracks small traders and sells their trading patterns to whales. Their slogan: 'We turn minnows into whale food'.",
+    "Whale Food Processing Plant": {
+      "background": "Specializes in turning retail investors into whale food. Their patented 'Pump and Dump' machine has been featured in several SEC investigations.",
+      "image": "/images/companies/whale-food.png"
+    },
     
-    "Gas Fee Extortion Inc": "Founded by Ethereum miners who got tired of waiting for tips. Now they run a protection racket - pay their fees or your transactions mysteriously get stuck.",
+    "Gas Fee Extortion Inc": {
+      "background": "Founded by former mob accountants who realized crypto gas fees were more profitable than protection money. They've cornered the market on 'accidentally' setting transaction fees to $1000.",
+      "image": "/images/companies/gas-fee.png"
+    },
     
     "Rekt City Morgue": "A blockchain forensics company that specializes in documenting how people lost everything. Their most popular service is the 'Autopsy Report' showing exactly where your portfolio went wrong.",
     
-    "Moon or Coffin Express": "A travel agency that only accepts crypto payments. They either book you a trip to the moon (metaphorically) or arrange your funeral (literally). No refunds.",
+    "Moon or Coffin Express": {
+      "background": "A delivery service that specializes in sending either champagne or funeral wreaths to traders, depending on their portfolio performance. Their motto: 'To the moon or to the grave!'",
+      "image": "/images/companies/moon-coffin.png"
+    },
     
-    "Degen's Death Wish": "A hedge fund that only invests in the most questionable crypto projects. Their investment strategy is literally throwing darts at a board of new tokens.",
+    "Degen's Death Wish": {
+      "background": "A hedge fund that only invests in projects with red flags. Their research department consists of a Magic 8-Ball and a dartboard with random crypto terms.",
+      "image": "/images/companies/degen.png"
+    },
     
     "Zero to Hero (Definitely Zero)": "Started as a legitimate trading education platform, but their students kept losing money. Now they just sell 'I survived crypto trading' t-shirts.",
     
@@ -34,7 +61,10 @@
     
     "Lambo or Living Under Bridge": "A car dealership that only accepts crypto and has a special section under a bridge for customers who can't pay. Their showroom is next to a homeless shelter.",
     
-    "HODL or Hospice": "A retirement home for crypto traders who never sold. The walls are covered in charts from 2017. The nurses are trained to whisper 'HODL' to dying patients.",
+    "HODL or Hospice": {
+      "background": "A retirement home for crypto traders who refuse to sell at a loss. Their medical staff is trained to respond to phrases like 'It's not a loss until you sell' and 'Diamond hands forever'.",
+      "image": "/images/companies/hodl.png"
+    },
     
     "Crypto Casino of Despair": "Where dreams go to die. Their slot machines are rigged to only pay out in shitcoins. The house always wins, especially when you're trading futures.",
     

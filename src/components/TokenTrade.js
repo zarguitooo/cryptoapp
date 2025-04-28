@@ -56,6 +56,11 @@ export function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
     setLoading(false);
   };
 
+  const getCompanyBackground = (corpName) => {
+    const background = companyBackgrounds.company_backgrounds[corpName];
+    return typeof background === 'object' ? background.background : background;
+  };
+
   return (
     <div className="token-trade">
       <div style={{ background: '#222', color: '#fff', width: 250, padding: 10, borderRadius: 8, fontFamily: 'sans-serif', border: '4px solid #aaa' }}>
@@ -82,7 +87,7 @@ export function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
                 boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
                 border: '1px solid #555'
               }}>
-                {companyBackgrounds.company_backgrounds[corp]}
+                {getCompanyBackground(corp)}
               </div>
             )}
           </h2>
@@ -109,7 +114,7 @@ export function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
             <span style={{ color: growth < 0 ? 'red' : 'lime' }}>{formatNum(tokenValue)}$</span>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+        <div style={{ display: 'flex', marginBottom: 8 }}>
           <button
             style={{ background: mode === 'buy' ? '#ff9800' : '#444', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 10px', marginRight: 6, cursor: 'pointer' }}
             onClick={() => setMode('buy')}

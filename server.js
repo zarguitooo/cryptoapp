@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const readline = require('readline');
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 let serverStart = Date.now();
 
@@ -311,9 +311,10 @@ app.post('/api/token/:id/trade', authenticatePlayer, (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log('\nAdmin mode activated. Type "help" for available commands.');
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Access the server at: http://localhost:${PORT}`);
+  console.log(`Other computers can access it at: http://YOUR_LOCAL_IP:${PORT}`);
   
   rl.on('line', (input) => {
     handleAdminCommand(input);
