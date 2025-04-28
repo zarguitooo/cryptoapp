@@ -241,7 +241,6 @@ function TokenMenu({ onSelect, playerId, portfolio }) {
 }
 
 function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
-  const [money, setMoney] = useState(0);
   const [tokens, setTokens] = useState(0);
   const [value, setValue] = useState(0);
   const [growth, setGrowth] = useState(0);
@@ -259,7 +258,6 @@ function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
     let interval;
     function fetchToken() {
       apiGetToken(tokenId, playerId).then(data => {
-        setMoney(data.money);
         setTokens(data.tokens);
         setValue(data.value);
         setGrowth(data.growth);
@@ -280,7 +278,6 @@ function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
     setError('');
     try {
       const result = await apiBuySell(tokenId, { type: mode, amount: Number(input) }, playerId);
-      setMoney(result.money);
       setTokens(result.tokens);
       setValue(result.value);
       setGrowth(result.growth);
@@ -299,7 +296,7 @@ function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
       <button onClick={onBack} style={{ marginBottom: 8, background: '#444', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 8px', cursor: 'pointer' }}>← Back</button>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
         <span>TIME</span>
-        <span>MONEY: <span style={{ background: '#ff9800', color: '#fff', padding: '2px 8px', borderRadius: 4 }}>{formatNum(money)}</span></span>
+        <span>MONEY: <span style={{ background: '#ff9800', color: '#fff', padding: '2px 8px', borderRadius: 4 }}>{formatNum(portfolio.money)}</span></span>
         <span>{portfolio.name}</span>
       </div>
       <div style={{ fontWeight: 'bold', fontSize: 24, marginTop: 8 }}>{name}</div>

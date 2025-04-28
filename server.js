@@ -56,8 +56,7 @@ function createPlayer(playerId, playerName) {
     money: 1000,
     portfolio: tokens.reduce((acc, token) => {
       acc[token.id] = {
-        tokens: 0,
-        money: 1000
+        tokens: 0
       };
       return acc;
     }, {})
@@ -140,7 +139,7 @@ app.get('/api/token/:id', authenticatePlayer, (req, res) => {
   res.json({
     ...token,
     tokens: playerToken.tokens,
-    money: playerToken.money,
+    money: req.player.money,
     tokenValue: playerToken.tokens * token.value
   });
 });
@@ -160,23 +159,23 @@ app.post('/api/token/:id/trade', authenticatePlayer, (req, res) => {
   
   if (type === 'buy') {
     const cost = amt * token.value;
-    if (playerToken.money < cost) {
+    if (req.player.money < cost) {
       return res.status(400).json({ error: 'Not enough money' });
     }
-    playerToken.money -= cost;
+    req.player.money -= cost;
     playerToken.tokens += amt;
   } else if (type === 'sell') {
     if (playerToken.tokens < amt) {
       return res.status(400).json({ error: 'Not enough tokens' });
     }
-    playerToken.money += amt * token.value;
+    req.player.money += amt * token.value;
     playerToken.tokens -= amt;
   }
 
   res.json({
     ...token,
     tokens: playerToken.tokens,
-    money: playerToken.money,
+    money: req.player.money,
     tokenValue: playerToken.tokens * token.value
   });
 });
