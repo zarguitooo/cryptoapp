@@ -195,17 +195,6 @@ app.get('/api/portfolio', authenticatePlayer, (req, res) => {
   res.json(req.player);
 });
 
-// Get all players (for leaderboard)
-app.get('/api/players', (req, res) => {
-  const players = Array.from(players.values()).map(player => ({
-    id: player.id,
-    name: player.name,
-    money: player.money,
-    portfolio: player.portfolio
-  }));
-  res.json(players);
-});
-
 // Get state for a single token
 app.get('/api/token/:tokenId', authenticatePlayer, (req, res) => {
   const token = tokens.find(t => t.id === req.params.tokenId);

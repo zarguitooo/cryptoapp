@@ -43,10 +43,4 @@ export async function apiBuySell(id, { type, amount }, playerId) {
   });
   if (!res.ok) throw new Error('Transaction failed');
   return res.json();
-}
-
-export async function apiGetPlayers() {
-  const res = await fetch(`${API_BASE_URL}/api/players`);
-  if (!res.ok) throw new Error('Failed to fetch players');
-  return res.json();
 } 
