@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -136,7 +137,13 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'build')));
+const buildPath = path.join(__dirname, 'build');
+if (fs.existsSync(buildPath)) {
+  app.use(express.static(buildPath));
+  console.log('Serving static files from build directory');
+} else {
+  console.warn('Build directory not found. Make sure to run "npm run build" before starting the server.');
+}
 
 // Player authentication middleware
 const authenticatePlayer = (req, res, next) => {
@@ -241,9 +248,20 @@ app.post('/api/token/:id/trade', authenticatePlayer, (req, res) => {
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  if (fs.existsSync(path.join(buildPath, 'index.html'))) {
+    res.sendFile(path.join(buildPath, 'index.html'));
+  } else {
+    res.status(500).json({ error: 'Build files not found. Please run "npm run build" first.' });
+  }
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
 });
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 }); 
