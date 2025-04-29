@@ -3,12 +3,14 @@ import './App.css';
 import { LoginPage } from './components/LoginPage';
 import { TokenMenu } from './components/TokenMenu';
 import { TokenTrade } from './components/TokenTrade';
-import { apiGetPortfolio } from './api/api';
+import { Leaderboard } from './components/Leaderboard';
+import { apiGetPortfolio, apiGetPlayers } from './api/api';
 
 function App() {
   const [selectedToken, setSelectedToken] = useState(null);
   const [playerId, setPlayerId] = useState('');
   const [portfolio, setPortfolio] = useState(null);
+  const [players, setPlayers] = useState([]);
 
   useEffect(() => {
     if (playerId) {
@@ -23,6 +25,18 @@ function App() {
       return () => clearInterval(interval);
     }
   }, [playerId]);
+
+  useEffect(() => {
+    // Fetch players data
+    const fetchPlayers = () => {
+      apiGetPlayers()
+        .then(setPlayers)
+        .catch(console.error);
+    };
+    fetchPlayers();
+    const interval = setInterval(fetchPlayers, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const renderContent = () => {
     if (!playerId) {
@@ -53,6 +67,7 @@ function App() {
       boxSizing: 'border-box',
       overflow: 'auto'
     }}>
+      <Leaderboard players={players} />
       {renderContent()}
     </div>
   );
