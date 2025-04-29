@@ -24,18 +24,37 @@ function App() {
     }
   }, [playerId]);
 
-  if (!playerId) {
-    return <LoginPage onLogin={setPlayerId} />;
-  }
+  const renderContent = () => {
+    if (!playerId) {
+      return <LoginPage onLogin={setPlayerId} />;
+    }
 
-  if (!portfolio) {
-    return <div>Loading...</div>;
-  }
+    if (!portfolio) {
+      return <div style={{ color: '#fff' }}>Loading...</div>;
+    }
 
-  return selectedToken ? (
-    <TokenTrade tokenId={selectedToken} onBack={() => setSelectedToken(null)} playerId={playerId} portfolio={portfolio} />
-  ) : (
-    <TokenMenu onSelect={setSelectedToken} playerId={playerId} portfolio={portfolio} />
+    return selectedToken ? (
+      <TokenTrade tokenId={selectedToken} onBack={() => setSelectedToken(null)} playerId={playerId} portfolio={portfolio} />
+    ) : (
+      <TokenMenu onSelect={setSelectedToken} playerId={playerId} portfolio={portfolio} />
+    );
+  };
+
+  return (
+    <div style={{
+      width: '100vw',
+      height: '100vh',
+      background: '#000',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: 0,
+      padding: 0,
+      boxSizing: 'border-box',
+      overflow: 'auto'
+    }}>
+      {renderContent()}
+    </div>
   );
 }
 
