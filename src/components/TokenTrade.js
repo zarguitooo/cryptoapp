@@ -9,7 +9,7 @@ export function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
   const [value, setValue] = useState(0);
   const [growth, setGrowth] = useState(0);
   const [demand, setDemand] = useState(0);
-  const [input, setInput] = useState(0);
+  const [input, setInput] = useState(10);
   const [mode, setMode] = useState('buy');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -17,6 +17,7 @@ export function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
   const [name, setName] = useState('');
   const [corp, setCorp] = useState('');
   const [history, setHistory] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [showBackground, setShowBackground] = useState(false);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
       setDemand(result.demand);
       setTokenValue(result.tokenValue);
       setHistory(result.history || []);
-      setInput(0);
+      setInput(10);
     } catch (e) {
       setError(e.message || 'Transaction failed');
     }
@@ -61,87 +62,402 @@ export function TokenTrade({ tokenId, onBack, playerId, portfolio }) {
     return typeof background === 'object' ? background.background : background;
   };
 
+  const transactionValue = input * value;
+
   return (
-    <div className="token-trade">
-      <div style={{ background: '#222', color: '#fff', width: 250, padding: 10, borderRadius: 8, fontFamily: 'sans-serif', border: '4px solid #aaa' }}>
-        <button onClick={onBack} style={{ marginBottom: 8, background: '#444', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 8px', cursor: 'pointer' }}>← Back</button>
-        <div style={{ position: 'relative' }}>
-          <h2 
-            style={{ margin: 0, cursor: 'help' }}
-            onMouseEnter={() => setShowBackground(true)}
-            onMouseLeave={() => setShowBackground(false)}
-          >
-            {name}
-            {showBackground && (
-              <div style={{
-                position: 'absolute',
-                top: '100%',
-                left: 0,
-                background: '#333',
-                color: '#fff',
-                padding: 10,
-                borderRadius: 4,
-                fontSize: '0.8em',
-                width: 300,
-                zIndex: 1000,
-                boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-                border: '1px solid #555'
-              }}>
-                {getCompanyBackground(corp)}
-              </div>
-            )}
-          </h2>
-          <p style={{ margin: '5px 0', fontSize: '0.9em', color: '#aaa' }}>{corp}</p>
+    <div style={{ 
+      background: '#000', 
+      color: '#fff', 
+      width: 400, 
+      padding: '20px', 
+      fontFamily: 'sans-serif',
+      minHeight: '100vh',
+      boxSizing: 'border-box'
+    }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        marginBottom: '10px',
+        fontSize: '14px',
+        alignItems: 'center'
+      }}>
+        <button
+          onClick={onBack}
+          style={{
+            background: '#222',
+            color: '#666',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '4px',
+            fontSize: '14px',
+            cursor: 'pointer'
+          }}
+        >
+          ← BACK
+        </button>
+        <span>MONEY: {formatNum(portfolio.money)}</span>
+        <span>USER</span>
+      </div>
+
+      <div style={{ 
+        fontSize: '14px', 
+        marginBottom: '20px',
+        textAlign: 'center'
+      }}>
+        TOTAL NET VALUE: {formatNum(portfolio.money)}
+      </div>
+
+      <div style={{ 
+        position: 'relative', 
+        marginBottom: '20px' 
+      }}>
+        <input 
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="🔍 search"
+          style={{
+            width: '100%',
+            padding: '10px',
+            background: '#111',
+            border: 'none',
+            borderRadius: '4px',
+            color: '#fff',
+            fontSize: '16px',
+            boxSizing: 'border-box'
+          }}
+        />
+      </div>
+
+      <div style={{ 
+        background: '#111',
+        padding: '20px',
+        borderRadius: '4px',
+        marginBottom: '20px'
+      }}>
+        <div style={{ 
+          fontSize: '48px', 
+          fontWeight: 'bold', 
+          marginBottom: '5px'
+        }}>
+          {name}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-          <span>TIME</span>
-          <span>MONEY: <span style={{ background: '#ff9800', color: '#fff', padding: '2px 8px', borderRadius: 4 }}>{formatNum(portfolio.money)}</span></span>
-          <span>{portfolio.name}</span>
+        <div style={{ 
+          color: '#666', 
+          fontSize: '14px',
+          marginBottom: '20px'
+        }}>
+          {corp}
         </div>
-        <div style={{ height: 60, background: '#111', margin: '8px 0', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <MiniGraph history={history} color={growth < 0 ? 'red' : 'lime'} showAxis={true} width={120} height={50} />
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', color: growth < 0 ? 'red' : 'lime', fontSize: 16 }}>
-          <span>{growth > 0 ? '+' : ''}{formatNum(growth)}%<br /><span style={{ color: '#fff', fontWeight: 'normal', fontSize: 10 }}>GROWTH</span></span>
-          <span>{demand > 0 ? '+' : ''}{formatNum(demand)}%<br /><span style={{ color: '#fff', fontWeight: 'normal', fontSize: 10 }}>DEMAND</span></span>
-          <span>{formatNum(value)}$<br /><span style={{ color: '#fff', fontWeight: 'normal', fontSize: 10 }}>VALUE</span></span>
-        </div>
-        <div style={{ color: growth < 0 ? 'red' : 'lime', fontSize: 12, margin: '4px 0 8px 0' }}>20% PROFIT</div>
-        <div style={{ background: '#111', borderRadius: 4, padding: 6, marginBottom: 8 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
-            <span>Your K:</span>
-            <span style={{ background: '#ff9800', color: '#fff', padding: '2px 8px', borderRadius: 4 }}>{formatNum(tokens)}</span>
-            <span style={{ color: growth < 0 ? 'red' : 'lime' }}>{formatNum(tokenValue)}$</span>
+
+        <div style={{
+          display: 'flex',
+          marginBottom: '20px'
+        }}>
+          <div style={{
+            flex: 1
+          }}>
+            <div style={{
+              background: '#fff',
+              color: '#000',
+              display: 'inline-block',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              marginBottom: '10px'
+            }}>
+              YOUR AMOUNT: {tokens}
+            </div>
+            <div style={{
+              background: '#222',
+              padding: '10px',
+              borderRadius: '4px'
+            }}>
+              HISTORY
+            </div>
           </div>
         </div>
-        <div style={{ display: 'flex', marginBottom: 8 }}>
-          <button
-            style={{ background: mode === 'buy' ? '#ff9800' : '#444', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 10px', marginRight: 6, cursor: 'pointer' }}
-            onClick={() => setMode('buy')}
-            disabled={loading}
-          >BUY</button>
-          <button
-            style={{ background: mode === 'sell' ? '#ff9800' : '#444', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 10px', marginRight: 6, cursor: 'pointer' }}
-            onClick={() => setMode('sell')}
-            disabled={loading}
-          >SELL</button>
-          <input
-            type="number"
-            min={0}
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            style={{ width: 50, marginLeft: 6, borderRadius: 4, border: '1px solid #888', padding: '2px 4px' }}
-            disabled={loading}
-          />
+
+        <div style={{
+          position: 'relative',
+          height: '200px',
+          marginBottom: '20px',
+          padding: '10px',
+          background: '#111',
+          overflow: 'hidden'
+        }}>
+          {/* Y-axis line */}
+          <div style={{
+            position: 'absolute',
+            left: '40px',
+            top: '10px',
+            bottom: '30px',
+            width: '1px',
+            background: '#333'
+          }} />
+          {/* Y-axis values */}
+          <div style={{
+            position: 'absolute',
+            left: '10px',
+            top: '10px',
+            bottom: '30px',
+            width: '30px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            color: '#666',
+            fontSize: '12px',
+            userSelect: 'none'
+          }}>
+            <div>50</div>
+            <div>40</div>
+            <div>30</div>
+            <div>20</div>
+            <div>10</div>
+            <div>0</div>
+          </div>
+          {/* X-axis line */}
+          <div style={{
+            position: 'absolute',
+            left: '40px',
+            right: '10px',
+            bottom: '30px',
+            height: '1px',
+            background: '#333'
+          }} />
+          {/* X-axis values */}
+          <div style={{
+            position: 'absolute',
+            left: '40px',
+            right: '10px',
+            bottom: '10px',
+            height: '20px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            color: '#666',
+            fontSize: '12px',
+            userSelect: 'none'
+          }}>
+            <div>0</div>
+            <div>10</div>
+            <div>20</div>
+            <div>30</div>
+            <div>40</div>
+            <div>50</div>
+            <div>60</div>
+          </div>
+          {/* Graph */}
+          <div style={{
+            position: 'absolute',
+            left: '40px',
+            right: '10px',
+            top: '10px',
+            bottom: '30px',
+            clipPath: 'inset(0 0 0 0)'
+          }}>
+            <MiniGraph 
+              history={history} 
+              color="#32CD32" 
+              showAxis={false} 
+              width={330} 
+              height={160} 
+            />
+          </div>
         </div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          gap: '10px',
+          marginBottom: '20px'
+        }}>
+          <div style={{
+            background: '#32CD32',
+            color: '#000',
+            padding: '8px',
+            borderRadius: '4px',
+            textAlign: 'center',
+            fontWeight: 'bold'
+          }}>
+            + {formatNum(growth)}%
+            <div style={{fontSize: '12px'}}>GROWTH</div>
+          </div>
+          <div style={{
+            background: '#32CD32',
+            color: '#000',
+            padding: '8px',
+            borderRadius: '4px',
+            textAlign: 'center',
+            fontWeight: 'bold'
+          }}>
+            + {formatNum(demand)}%
+            <div style={{fontSize: '12px'}}>DEMAND</div>
+          </div>
+          <div style={{
+            background: '#32CD32',
+            color: '#000',
+            padding: '8px',
+            borderRadius: '4px',
+            textAlign: 'center',
+            fontWeight: 'bold'
+          }}>
+            {formatNum(value)}$
+            <div style={{fontSize: '12px'}}>VALUE</div>
+          </div>
+        </div>
+
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '20px',
+          marginBottom: '20px'
+        }}>
+          <div style={{
+            color: '#666',
+            fontSize: '24px',
+            fontWeight: 'bold',
+            flex: 1
+          }}>
+            {mode === 'buy' ? 'BUY' : 'SELL'}
+          </div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            <button
+              onClick={() => setInput(Math.max(0, input - 1))}
+              style={{
+                background: '#222',
+                color: '#fff',
+                border: 'none',
+                width: '30px',
+                height: '30px',
+                borderRadius: '4px',
+                fontSize: '20px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              -
+            </button>
+            <input
+              type="number"
+              value={input}
+              onChange={e => setInput(Math.max(0, parseInt(e.target.value) || 0))}
+              style={{
+                background: '#fff',
+                border: 'none',
+                padding: '8px',
+                width: '60px',
+                borderRadius: '4px',
+                textAlign: 'center',
+                fontSize: '16px'
+              }}
+            />
+            <button
+              onClick={() => setInput(input + 1)}
+              style={{
+                background: '#222',
+                color: '#fff',
+                border: 'none',
+                width: '30px',
+                height: '30px',
+                borderRadius: '4px',
+                fontSize: '20px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginBottom: '20px'
+        }}>
+          <button
+            onClick={() => setMode('buy')}
+            style={{
+              background: mode === 'buy' ? '#32CD32' : '#222',
+              color: mode === 'buy' ? '#000' : '#666',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '4px',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              flex: 1,
+              marginRight: '10px'
+            }}
+          >
+            BUY
+          </button>
+          <button
+            onClick={() => setMode('sell')}
+            style={{
+              background: mode === 'sell' ? '#32CD32' : '#222',
+              color: mode === 'sell' ? '#000' : '#666',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '4px',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              flex: 1
+            }}
+          >
+            SELL
+          </button>
+        </div>
+
+        <div style={{
+          background: '#222',
+          padding: '10px',
+          borderRadius: '4px',
+          marginBottom: '20px',
+          textAlign: 'center',
+          fontSize: '16px',
+          color: mode === 'buy' ? '#ff4444' : '#32CD32'
+        }}>
+          {transactionValue > 0 && `${mode === 'buy' ? '-' : '+'}${formatNum(transactionValue)}$`}
+        </div>
+
         <button
           onClick={handleTransaction}
-          style={{ width: '100%', background: '#ff9800', color: '#fff', border: 'none', borderRadius: 4, padding: '8px 0', fontWeight: 'bold', fontSize: 14, cursor: 'pointer' }}
           disabled={loading || input <= 0}
+          style={{
+            background: '#fff',
+            color: '#000',
+            border: 'none',
+            padding: '15px',
+            width: '100%',
+            borderRadius: '4px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            opacity: (loading || input <= 0) ? 0.5 : 1
+          }}
         >
-          {loading ? 'PROCESSING...' : 'COMPLETE TRANSACTION'}
+          CONFIRM TRANSACTION
         </button>
-        {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
+
+        {error && (
+          <div style={{ 
+            color: '#ff4444', 
+            marginTop: '15px',
+            textAlign: 'center',
+            fontSize: '14px'
+          }}>
+            {error}
+          </div>
+        )}
       </div>
     </div>
   );
