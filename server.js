@@ -247,21 +247,21 @@ app.post('/api/token/:tokenId/trade', authenticatePlayer, (req, res) => {
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
-app.get('*', (req, res) => {
-  if (fs.existsSync(path.join(buildPath, 'index.html'))) {
-    res.sendFile(path.join(buildPath, 'index.html'));
+app.get('/*', (req, res) => {
+  const indexPath = path.join(__dirname, 'build', 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
   } else {
-    res.status(500).json({ error: 'Build files not found. Please run "npm run build" first.' });
+    res.status(404).json({ error: 'Application not built properly. Please run npm run build first.' });
   }
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  console.error('Server error:', err);
+  res.status(500).json({ error: 'Internal server error' });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
 }); 
