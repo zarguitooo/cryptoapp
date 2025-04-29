@@ -247,7 +247,7 @@ app.post('/api/token/:tokenId/trade', authenticatePlayer, (req, res) => {
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
-app.get('/*', (req, res) => {
+app.get(['/'], (req, res) => {
   const indexPath = path.join(__dirname, 'build', 'index.html');
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
