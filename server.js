@@ -196,8 +196,8 @@ app.get('/api/portfolio', authenticatePlayer, (req, res) => {
 });
 
 // Get state for a single token
-app.get('/api/token/:id', authenticatePlayer, (req, res) => {
-  const token = tokens.find(t => t.id === req.params.id);
+app.get('/api/token/:tokenId', authenticatePlayer, (req, res) => {
+  const token = tokens.find(t => t.id === req.params.tokenId);
   if (!token) return res.status(404).json({ error: 'Token not found' });
   
   const playerToken = req.player.portfolio[token.id];
@@ -210,8 +210,8 @@ app.get('/api/token/:id', authenticatePlayer, (req, res) => {
 });
 
 // Buy or sell for a single token
-app.post('/api/token/:id/trade', authenticatePlayer, (req, res) => {
-  const token = tokens.find(t => t.id === req.params.id);
+app.post('/api/token/:tokenId/trade', authenticatePlayer, (req, res) => {
+  const token = tokens.find(t => t.id === req.params.tokenId);
   if (!token) return res.status(404).json({ error: 'Token not found' });
   
   const { type, amount } = req.body;
