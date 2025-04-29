@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const readline = require('readline');
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -211,6 +212,9 @@ setInterval(() => {
 app.use(cors());
 app.use(express.json());
 
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'build')));
+
 // Player authentication middleware
 const authenticatePlayer = (req, res, next) => {
   const playerId = req.headers['x-player-id'];
@@ -309,6 +313,12 @@ app.post('/api/token/:id/trade', authenticatePlayer, (req, res) => {
     money: req.player.money,
     tokenValue: playerToken.tokens * token.value
   });
+});
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {
